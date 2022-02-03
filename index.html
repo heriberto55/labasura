@@ -112,18 +112,18 @@
                                 <p>Calendario de las actividades</p>
                             </div>
                         </div>
-                        <div class="imagen-port" onclick="mostrar(7)">
-                            <img src="img/examen.png" alt="">
-                            <div class="hover-galeria">
-                                <img src="img/icono1.png" alt="">
-                                <p>Evaluación</p>
-                            </div>
-                        </div>
                         <div class="imagen-port" onclick="mostrar(8)">
                             <img src="img/open-book.png" alt="">
                             <div class="hover-galeria">
                                 <img src="img/icono1.png" alt="">
                                 <p>Descargar Actividades</p>
+                            </div>
+                        </div>
+                        <div class="imagen-port" onclick="mostrar(7)">
+                            <img src="img/casa.png" alt="">
+                            <div class="hover-galeria">
+                                <img src="img/icono1.png" alt="">
+                                <p>Bienvenido</p>
                             </div>
                         </div>
                         <div class="imagen-port" onclick="mostrar(9)">
@@ -457,7 +457,7 @@
                         <br>
                         <p>Los alumnos compartirán con sus compañeros del proyecto sus investigaciones utilizando un  Foro de Discusión.</p>
                         <br>
-                        <h3>¿Qué importancia tiene la separación de la basura?</h3>
+                        <p>¿Qué importancia tiene la separación de la basura?</p>
 
                     </div>
                     <div class=" calendario fase6 oculto">
@@ -506,8 +506,8 @@
                         <br>
                         <p>Los alumnos que así lo deseen podrán enviar otro tipo de aportaciones (rimas, adivinanzas, canciones) relacionadas con el tema de la basura.</p>
                         <br>
-                        <li><a href="https://www.vix.com/es/imj/familia/5336/rimas-infantiles-sobre-el-medio-ambiente">Rimas infantiles sobre el medio ambiente - VIX</a></li>
-                        <li><a href="https://brainly.lat/tarea/1227917">Rimas del medio ambiente cortas - Brainly.lat</a></li>
+                        <li><a href="https://www.vix.com/es/imj/familia/5336/rimas-infantiles-sobre-el-medio-ambiente"target="_blank">Rimas infantiles sobre el medio ambiente - VIX</a></li>
+                        <li><a href="https://brainly.lat/tarea/1227917"target="_blank">Rimas del medio ambiente cortas - Brainly.lat</a></li>
                         <br>
                         <h4>Fecha del 26 de abril al 6 de mayo</h4>
                         <br>
@@ -522,27 +522,18 @@
                 </div>
 
 
-
-
-                <div class="servicio-cont bienvenido mostrar7 oculto">
-                <div class="servicio-ind">
-                <h2 class="titulo">Evaluación</h2> 
-                <div class="">                    
-                <h3>Favor de ingresar al sigueinte enlace:</h3>
-                <br> 
-                </div>
-                </div>
-                </div>
                 <div class="servicio-cont bienvenido mostrar8 oculto">
                 <div class="servicio-ind">
                 <h2 class="titulo">Actividades</h2> 
                 <h3>Dar clic en la imagen para descargar el archivo</h3>
                 <br>
                 <br>
-                <div class="pdf ">           
+                <div class="pdf ">    
                  <a href= "/pdfs/actividades.pdf" download="Proyectoconociendolabasurasinaloa">
                     <img src="img/pdf.png" alt="">
                     </a>     
+                    <br>
+                    <embed src="/pdfs/actividades.pdf" width="1000px" height="1000px" />
                 <br> 
                 </div>
                 </div>
@@ -596,7 +587,7 @@
         
         <section class="clientes contenedor">
            
-                <h3 class="h3">¡Atrévete a guiar a sus alumnos en esta nueva aventura!</h3>
+                <h3 class="h3">¡Atrévete a guiar a tus alumnos en esta nueva aventura!</h3>
                 <br>
                 
                 <div class="aprenderan">
@@ -687,7 +678,7 @@
               
             </div>
         </div>
-        <h2 class="titulo-final">&copy;<img class="img-final" src="/img/dtelOgo.png" alt="">
+        <h2 class="titulo-final">&copy;<img class="img-final" src="./img/dtelogo.png" alt="">
     </footer>
 
     <section class="amarillo-foot">
@@ -701,7 +692,7 @@
                 <h4 class="verde-text1">Dirección Blvd. Pedro Infante Cruz 2200 pte.           Email: contacto@todamiescuela.com                Desarrollado por DTE     </h4>
             </div> -->
             <div class="wrapper">
-                <div>Dirección Blvd. Pedro Infante Cruz 2200 pte. </div>
+                <div>Blvd. Pedro Infante 2200 Poniente, Secretaría de Educación Pública y Cultura, Recursos Hidráulicos, Blvd. Pedro Infante 2200, Recursos, 80100 Culiacán Rosales, Sin. </div>
                 <div>Email: contacto@todamiescuela.com</div>
                 <div>Desarrollado por DTE</div>
             </div>
@@ -716,6 +707,11 @@
     <script>
         function mostrar(val){
             var codigo = "#datosBtn"
+            if(val == 7){
+                $('.bienvenido, .calendario').removeClass('mostrar');
+                $('.bienvenido, .calendario').addClass('oculto');
+                return;
+            }
             $('.bienvenido, .calendario').removeClass('mostrar');
             $('.bienvenido, .calendario').addClass('oculto');
             if($('.mostrar'+val).hasClass('oculto')){ 

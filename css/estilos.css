@@ -431,8 +431,8 @@ main .sobre-nosotros{
     background: #f2f2f2;
     background-color: rgba(0, 0, 0, .6);
     width: 100%;
-    height: 100%;
-    bottom: 1550px;
+    height: 50%;
+    bottom: 100%x;
   
 }
 .portafolio1{
@@ -441,7 +441,7 @@ main .sobre-nosotros{
     width: 100%;
     height: 100%;
     bottom: 1150px;
-    
+    text-align: center;
 
 }
 
@@ -657,27 +657,11 @@ footer{
     .calendario{
     width: auto;
     height: auto; }
-  
-    .portafolio1{
-        background: #f2f2f2;
-        background-color: rgba(0, 0, 0, .6);
-        width: 100%;
-        height: 100%;
-        bottom: 1150px;
-        
-    
-    }
-    
-    .galeria-port{
-        display: flex;
-        justify-content: space-evenly;
-        flex-wrap: wrap;
-    }
-    
+
     
         .imagen-port{
     
-            width: 10%;
+            width: 8%;
             color:white;
             margin-bottom: 30px;
             overflow: hidden;
@@ -852,9 +836,36 @@ iframe { width: 250px; height: 280px; }
 }
 
 @media screen and (max-width:500px){
-
+    .portafolio1{
+        background: #f2f2f2;
+        background-color: rgba(0, 0, 0, .6);
+        width: 100%;
+        height: 100%;
+        bottom: 1000px;
+     
     
-    
+    }
+    .imagen-port{
+        width: 100%;
+        color:white;
+        margin-bottom: 30px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        box-shadow: 0 0 6px 0 rgba(0, 0, 0, .5);
+        height: 100%;
+    }
+    .imagen-port1{
+        width: 100%;
+        color:rgb(255, 255, 255);
+        margin-bottom: 34px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        box-shadow: 0 0 6px 0 rgba(255, 250, 250, 0.5);
+        height: 100%;
+        text-align: center;
+     }
     nav{
         text-align: center;
         padding: 30px 0 0 0;
@@ -991,7 +1002,7 @@ iframe { width: 250px; height: 280px; }
     /* Galeria */
 
     .imagen-port{
-        width: 95%;
+        width: 55%;
     }
 
     /* Clients */
