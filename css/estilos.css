@@ -845,6 +845,10 @@ iframe { width: 250px; height: 280px; }
      
     
     }
+    iframe { width: 250px; height: 280px; }
+
+    video  {width: 350px; height: 320px; }
+    
     .imagen-port{
         width: 100%;
         color:white;
