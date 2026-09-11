@@ -10,6 +10,7 @@
   const mediaTools = document.getElementById('mediaTools');
   const insertMenu = document.getElementById('insertMenu');
   const selectedMenu = document.getElementById('selectedMenu');
+  const linkMenu = document.getElementById('linkMenu');
   const insertImageButton = document.getElementById('insertImage');
   const insertVideoButton = document.getElementById('insertVideo');
   const insertYoutubeButton = document.getElementById('insertYoutube');
@@ -20,6 +21,10 @@
   const moveMediaDownButton = document.getElementById('moveMediaDown');
   const deleteMediaButton = document.getElementById('deleteMedia');
   const selectedMediaLabel = document.getElementById('selectedMediaLabel');
+  const linkTextInput = document.getElementById('linkText');
+  const linkUrlInput = document.getElementById('linkUrl');
+  const applyLinkButton = document.getElementById('applyLink');
+  const unlinkTextButton = document.getElementById('unlinkText');
   const imageUpload = document.getElementById('imageUpload');
   const videoUpload = document.getElementById('videoUpload');
   const replaceUpload = document.getElementById('replaceUpload');
@@ -28,6 +33,7 @@
   let originalHtml = '';
   let editing = false;
   let selectedMedia = null;
+  let selectedLink = null;
   let savedRange = null;
 
   function getFrameDocument() {
@@ -41,6 +47,10 @@
 
   function isMediaElement(element) {
     return element && ['IMG', 'VIDEO', 'IFRAME'].indexOf(element.tagName) !== -1;
+  }
+
+  function isLinkElement(element) {
+    return element && element.tagName === 'A';
   }
 
   function isYoutubeElement(element) {
@@ -57,6 +67,15 @@
   function iframeUrl(url) {
     const value = (url || '').trim();
     if (!/^https?:\/\//i.test(value)) {
+      return '';
+    }
+
+    return value;
+  }
+
+  function linkUrl(url) {
+    const value = (url || '').trim();
+    if (value === '' || /^javascript:/i.test(value)) {
       return '';
     }
 
@@ -128,6 +147,7 @@
   function reloadPreview() {
     editing = false;
     selectedMedia = null;
+    selectedLink = null;
     savedRange = null;
     hideContextMenu();
     editButton.disabled = true;
@@ -139,6 +159,7 @@
   function showContextMenu(clientX, clientY, mode) {
     insertMenu.hidden = mode !== 'insert';
     selectedMenu.hidden = mode !== 'selected';
+    linkMenu.hidden = mode !== 'link';
     mediaTools.hidden = false;
 
     const margin = 12;
@@ -170,6 +191,23 @@
     updateMediaButtons();
   }
 
+  function selectLink(element) {
+    const doc = getFrameDocument();
+    doc.querySelectorAll('.cms-selected-link').forEach(function (node) {
+      node.classList.remove('cms-selected-link');
+    });
+
+    selectedLink = isLinkElement(element) ? element : null;
+    if (selectedLink) {
+      selectedLink.classList.add('cms-selected-link');
+      linkTextInput.value = selectedLink.textContent.trim();
+      linkUrlInput.value = selectedLink.getAttribute('href') || '';
+    } else {
+      linkTextInput.value = '';
+      linkUrlInput.value = '';
+    }
+  }
+
   function addEditorStyles(doc) {
     if (doc.getElementById('cms-editor-styles')) {
       return;
@@ -179,7 +217,8 @@
     style.id = 'cms-editor-styles';
     style.textContent = [
       '.cms-editing img,.cms-editing video,.cms-editing iframe{cursor:pointer;outline:2px dashed rgba(31,122,77,.35);outline-offset:3px;pointer-events:none;}',
-      '.cms-editing .cms-selected-media{outline:4px solid #1f7a4d!important;outline-offset:4px;}'
+      '.cms-editing a{cursor:pointer;outline:2px dashed rgba(31,122,77,.2);outline-offset:2px;}',
+      '.cms-editing .cms-selected-media,.cms-editing .cms-selected-link{outline:4px solid #1f7a4d!important;outline-offset:4px;}'
     ].join('');
     doc.head.appendChild(style);
   }
@@ -192,6 +231,9 @@
 
     doc.querySelectorAll('.cms-selected-media').forEach(function (node) {
       node.classList.remove('cms-selected-media');
+    });
+    doc.querySelectorAll('.cms-selected-link').forEach(function (node) {
+      node.classList.remove('cms-selected-link');
     });
     doc.body.classList.remove('cms-editing');
   }
@@ -210,10 +252,19 @@
           event.preventDefault();
           event.stopPropagation();
           selectMedia(media);
+          selectLink(null);
+          return;
+        }
+
+        const link = event.target.closest ? event.target.closest('a') : null;
+        if (isLinkElement(link)) {
+          selectMedia(null);
+          selectLink(link);
           return;
         }
 
         selectMedia(null);
+        selectLink(null);
       }, true);
 
       doc.addEventListener('contextmenu', function (event) {
@@ -225,15 +276,26 @@
         event.stopPropagation();
 
         const frameRect = frame.getBoundingClientRect();
+        const link = event.target.closest ? event.target.closest('a') : null;
+        if (isLinkElement(link)) {
+          selectMedia(null);
+          selectLink(link);
+          savedRange = null;
+          showContextMenu(frameRect.left + event.clientX, frameRect.top + event.clientY, 'link');
+          return;
+        }
+
         const media = mediaAtPoint(doc, event.clientX, event.clientY);
         if (isMediaElement(media)) {
           selectMedia(media);
+          selectLink(null);
           savedRange = null;
           showContextMenu(frameRect.left + event.clientX, frameRect.top + event.clientY, 'selected');
           return;
         }
 
         selectMedia(null);
+        selectLink(null);
         setInsertPointFromEvent(doc, event);
         showContextMenu(frameRect.left + event.clientX, frameRect.top + event.clientY, 'insert');
       }, true);
@@ -333,6 +395,7 @@
     } else {
       savedRange = null;
       selectMedia(null);
+      selectLink(null);
     }
 
     setStatus(editing ? 'Modo edición activo' : '');
@@ -344,6 +407,7 @@
     originalHtml = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
     editing = false;
     selectedMedia = null;
+    selectedLink = null;
     editButton.disabled = false;
     saveButton.disabled = true;
     cancelButton.disabled = true;
@@ -531,6 +595,42 @@
     selectedMedia.remove();
     selectMedia(null);
     setStatus('Elemento eliminado.');
+  });
+
+  applyLinkButton.addEventListener('click', function () {
+    if (!selectedLink || !selectedLink.isConnected) {
+      setStatus('Selecciona un enlace para editar.', true);
+      return;
+    }
+
+    const nextText = linkTextInput.value.trim();
+    const nextUrl = linkUrl(linkUrlInput.value);
+    if (nextText === '') {
+      setStatus('Escribe el nombre del enlace.', true);
+      return;
+    }
+    if (!nextUrl) {
+      setStatus('Escribe una URL valida.', true);
+      return;
+    }
+
+    selectedLink.textContent = nextText;
+    selectedLink.setAttribute('href', nextUrl);
+    hideContextMenu();
+    setStatus('Enlace actualizado.');
+  });
+
+  unlinkTextButton.addEventListener('click', function () {
+    if (!selectedLink || !selectedLink.isConnected) {
+      setStatus('Selecciona un enlace para quitar.', true);
+      return;
+    }
+
+    const textNode = getFrameDocument().createTextNode(selectedLink.textContent);
+    selectedLink.parentNode.replaceChild(textNode, selectedLink);
+    selectedLink = null;
+    hideContextMenu();
+    setStatus('Enlace quitado.');
   });
 
   document.addEventListener('click', function (event) {
