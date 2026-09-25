@@ -3,3 +3,8 @@
 data/
 cms/sessions/
 cms/backups/
+*.mp4
+.DS_Store
+data/
+cms/sessions/
+cms/backups/
